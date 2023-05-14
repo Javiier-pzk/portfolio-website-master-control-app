@@ -7,8 +7,10 @@ import coinhakoLogo from "@/public/assets/images/coinhako-logo.png";
 import nusLogo from "@/public/assets/images/nus-logo.png";
 import successItLogo from "@/public/assets/images/success-it-logo.png";
 import powerhouseAiLogo from "@/public/assets/images/powerhouse-ai-logo.png";
+import { useSession } from "next-auth/react"
 
 const Experience = () => {
+  useSession({ required: true })
   const [isCoinhako, setIsCoinhako] = useState(true);
   const [isNus, setIsNus] = useState(false);
   const [isSuccessIt, setIsSuccessIt] = useState(false);

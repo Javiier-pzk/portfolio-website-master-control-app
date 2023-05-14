@@ -1,8 +1,10 @@
 import Head from "next/head";
 import ProjectCard from "@/components/projectCard";
 import SectionTitle from "@/components/sectionTitle";
+import { useSession } from "next-auth/react"
 
 const Projects = () => {
+  useSession({ required: true })
   return (
     <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center mt-[10vh] sml:mt-0 py-10 mdl:py-20">
       <Head>

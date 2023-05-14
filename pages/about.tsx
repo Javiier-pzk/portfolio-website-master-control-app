@@ -26,8 +26,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import profilePic from "../public/assets/images/profile-pic.jpeg";
 import { useState } from "react";
+import { useSession } from "next-auth/react"
 
 const About = () => {
+  useSession({ required: true })
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

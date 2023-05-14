@@ -1,8 +1,15 @@
 import Head from "next/head";
 import { motion } from "framer-motion";
 import Footer from "@/components/footer";
+import { signOut, getSession } from "next-auth/react"
+import { Session } from "next-auth"
+import { NextPage, GetServerSideProps } from "next";
 
-const Contact = () => {
+interface ContactPageProps {
+  session: Session | null;
+}
+
+const Contact: NextPage<ContactPageProps> = () => {
   return (
     <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center justify-center">
       <Head>
@@ -34,21 +41,43 @@ const Contact = () => {
           Whether you have a question, job opportunity, or just want to say hi,
           drop me an email and I will get back to you as soon as possible!
         </motion.p>
-        <motion.a 
+
+        <motion.button
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          href={`mailto:${process.env.NEXT_PUBLIC_GMAIL}`}>
-          <button
-            className="w-40 h-14 border border-textYellow mt-6 font-titleFont text-textYellow tracking-wider rounded-md hover:bg-hoverColor duration-300"
-          >
-            Say Hi!
-          </button>
-        </motion.a>
+          onClick={() => signOut()}
+          className="w-40 h-14 border border-textYellow mt-6 font-titleFont text-textYellow tracking-wider rounded-md hover:bg-hoverColor duration-300"
+        >
+          Sign Out
+        </motion.button>
+
         <Footer />
       </main>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<ContactPageProps> = async (
+  context
+) => {
+  const session = await getSession(context);
+  if (!session) {
+    return {
+      props: {
+        session: session,
+      },
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {
+      session: session,
+    },
+  };
 };
 
 export default Contact;

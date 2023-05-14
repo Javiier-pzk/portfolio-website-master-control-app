@@ -3,8 +3,10 @@ import CertificationCard from "@/components/certificationCard";
 import hackwagonCert from "@/public/assets/images/hackwagon-cert.png";
 import orbitalCert from "@/public/assets/images/orbital-cert.png";
 import Head from "next/head";
+import { useSession } from "next-auth/react"
 
 const Certifications = () => {
+  useSession({ required: true })
   return (
     <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center mt-[10vh] sml:mt-0 py-10 mdl:py-20">
       <Head>

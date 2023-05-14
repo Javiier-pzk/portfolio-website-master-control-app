@@ -1,68 +1,74 @@
-import Head from "next/head";
+import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import Head from "next/head";
+import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { GetServerSideProps, NextPage } from "next";
+import { Session } from "next-auth";
 
-const Home = () => {
+interface LoginPageProps {
+  session: Session | null;
+}
+
+const LoginPage: NextPage<LoginPageProps> = () => {
+
+  const {data: session} = useSession()
+  const router = useRouter()
+  useEffect(() => {
+    if (session) {
+      router.push("/home")
+    }
+  }, [session])
+
   return (
-    <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center mt-[10vh] sml:mt-0 py-10 mdl:py-0">
+    <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center justify-center">
       <Head>
-        <title>Javiier-pzk | Home</title>
+        <title>Javiier-pzk-master | Login</title>
       </Head>
-      <main className="flex flex-col gap-4 lgl:gap-8">
-        <motion.h3
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-lg font-titleFont tracking-wide text-textYellow"
-        >
-          Hello, my name is
-        </motion.h3>
-        <motion.h1
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="text-4xl lgl:text-6xl font-titleFont font-semibold flex flex-col text-textLight"
-        >
-          Javier Phon Zhee Kai.
-          <span className="text-textDark mt-2 lgl:mt-4 text-2xl lgl:text-4xl">
-            I am a student, developer and aspiring Software Engineer.
-          </span>
-        </motion.h1>
+      <main className="flex flex-col gap-4 items-center justify-center">
         <motion.p
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-base md:max-w-[700px] text-textLight font-medium"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="font-titleFont text-lg text-textYellow font-semibold flex items-center tracking-wide"
         >
-          As a penultimate year Computer Science undergraduate at the National
-          University of Singapore with a specialisation in Software Engineering
-          and a minor in Management, I am very passionate about all things tech
-          and is very eager to acquire real-world experience in the tech/fintech
-          industry as a Software Engineer. Furthermore, I pride myself as a
-          highly motivated, disciplined, and hardworking individual who is easy
-          to work with, always willing to learn, and always open to meeting new
-          people!<br></br>
-          <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank">
-            <span className="text-textYellow inline-flex relative cursor-pointer h-7 overflow-x-hidden group">
-              Learn More
-              <span className="absolute w-full h-[1px] bg-textYellow left-0 bottom-1 -translate-x-[110%] group-hover:translate-x-0 transition-transform duration-500"></span>
-            </span>
-          </a>
+          Hello there!
         </motion.p>
-        <motion.a 
-          initial={{ y: 10, opacity: 0 }}
+        <motion.h2
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="font-titleFont text-4xl mdl:text-3xl font-semibold"
+        >
+          Please sign in to proceed
+        </motion.h2>
+        <motion.button
+          initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.9 }}
-          href={process.env.NEXT_PUBLIC_GITHUB_URL} 
-          target="_blank">
-          <button
-            className="w-52 h-14 text-sm font-titleFont border border-textYellow rounded-md text-textYellow tracking-wide hover:bg-hoverColor duration-300"
-          >
-            View my projects!
-          </button>
-        </motion.a>
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="w-auto h-14 border border-textYellow mt-6 rounded-md hover:bg-hoverColor duration-300 flex gap-6 items-center"
+          onClick={() => signIn()}
+        >
+          <FcGoogle className="pl-4 text-5xl" />
+          <p className="pr-4 font-titleFont text-textYellow tracking-wider">
+            Sign in with Google
+          </p>
+        </motion.button>
       </main>
     </div>
   );
-}
+};
 
-export default Home
+export const getServerSideProps: GetServerSideProps<LoginPageProps> = async (
+  context
+) => {
+  const session = await getSession(context);
+  return {
+    props: {
+      session: session,
+    },
+  };
+};
+
+export default LoginPage;
