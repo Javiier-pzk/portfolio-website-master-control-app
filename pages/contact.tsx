@@ -1,15 +1,26 @@
 import Head from "next/head";
 import { motion } from "framer-motion";
 import Footer from "@/components/footer";
-import { signOut, getSession } from "next-auth/react"
+import { useEffect } from "react";
+import { signOut, getSession, useSession } from "next-auth/react"
 import { Session } from "next-auth"
 import { NextPage, GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 
 interface ContactPageProps {
   session: Session | null;
 }
 
 const Contact: NextPage<ContactPageProps> = () => {
+
+  const {data: session} = useSession()
+  const router = useRouter()
+  useEffect(() => {
+    if (!session) {
+      router.push("/")
+    }
+  }, [session])
+
   return (
     <div className="min-h-[90vh] sml:min-h-[88vh] flex items-center justify-center">
       <Head>
@@ -62,17 +73,6 @@ export const getServerSideProps: GetServerSideProps<ContactPageProps> = async (
   context
 ) => {
   const session = await getSession(context);
-  if (!session) {
-    return {
-      props: {
-        session: session,
-      },
-      redirect: {
-        destination: "/",
-        permanent: false
-      }
-    }
-  }
   return {
     props: {
       session: session,
